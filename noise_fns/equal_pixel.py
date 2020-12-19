@@ -9,21 +9,22 @@ from kep_main import keppca
 
 def main(src_file, sigma, iter_num, PCA_FILES_FOLDER, RAW_FILES_FOLDER):
     print("Processing ........... Sigma: %s, Iter: %s" % (sigma, iter_num))
-   
+    
     hdul1 = fits.open(src_file)
     data1 = hdul1[1].data
 
     shape = data1['FLUX'].shape
 
     mu = 0
-    frames_num = shape[0]
-    s = np.random.normal(mu, sigma, frames_num)
-    s_master_clip = np.zeros(shape)
 
+    s = np.random.normal(mu, sigma, shape[1]*shape[2])
+    s_reshape = np.reshape(s, (shape[1], shape[2]))
+    s_master_clip = np.empty(shape)
+    
     for i, frame in enumerate(s_master_clip):
         for j, x in enumerate(frame):
             for k, y in enumerate(x):
-                s_master_clip[i][j][k] = s[i]
+                s_master_clip[i][j][k] = s_reshape[j][k]
 
     data1['FLUX'] = np.add(s_master_clip, data1['FLUX'])
     
