@@ -1,0 +1,2 @@
+# Activate environment
+poetry shell
